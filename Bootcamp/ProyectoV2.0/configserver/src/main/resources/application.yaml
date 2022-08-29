@@ -3,17 +3,16 @@ server:
 
 spring:
   application:
-    name: configserver
+    name: config-server
   cloud:
     config:
       server:
         git:
-          uri: https://github.com/zxxjuliusxxz/NTT_DATA.git
-          default-label: main
-          search-paths: configdata
-          username: ${GIT_USERNAME}
-          password: ${GIT_PASSWORD}
+          uri: https://github.com/zxxjuliusxxz/config-data.git
+          #searchPaths: config-data
+          username: zxxjuliusxxz
+          password: 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
   security:
-      user:
-        name: root
-        password: root
+    user:
+      name: root
+      password: root
