@@ -1,9 +1,18 @@
-server:
-  port: 8081
-
 spring:
   application:
-    name: Account-Client
-  data:
-     mongodb:
-      uri: mongodb://localhost:27017/cuentaBanco
+    name: 1.account
+  cloud:
+    config:
+      uri: http://localhost:8084
+      username: root
+      password: root
+
+#server:
+  #port: 8081
+
+#spring:
+  #application:
+    #name: Account-Client
+  #data:
+     #mongodb:
+      #uri: mongodb://localhost:27017/cuentaBanco

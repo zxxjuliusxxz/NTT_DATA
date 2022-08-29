@@ -2,9 +2,15 @@ spring:
   application:
     name: Eureka-Server
 
-eureka:
-  client:
-    registerWithEureka: false
-    fetchRegistry: false
-server:
-  port: 8761
+  cloud:
+    config:
+      uri: http://localhost:8084
+      username: root
+      password: root
+
+#eureka:
+  #client:
+    #registerWithEureka: false
+    #fetchRegistry: false
+#server:
+  #port: 8761
