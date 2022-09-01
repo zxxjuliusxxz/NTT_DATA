@@ -1,5 +1,6 @@
 package com.webflux.jfgb.webflux.Controllers;
 
+import com.webflux.jfgb.webflux.Application.Models.DTO.CustomerDTO;
 import com.webflux.jfgb.webflux.Application.Services.BankAccount.IBankAccountService;
 import com.webflux.jfgb.webflux.Domain.BankAccount;
 import lombok.AccessLevel;
@@ -38,6 +39,7 @@ public class BankAccountController {
 
     @GetMapping("/{id}")
     public Mono<ResponseEntity<BankAccount>> getAccountBank(@PathVariable String id) {
+
         return accountService.findById(id)
                 .map(accountBank -> ResponseEntity.ok(accountBank))
                 .defaultIfEmpty(ResponseEntity.notFound().build());
@@ -48,6 +50,15 @@ public class BankAccountController {
                                                              @RequestBody BankAccount bankAccount) {
         return accountService.updater(id, bankAccount)
                 .map(mapper -> ResponseEntity.ok(mapper))
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    //NUEVOS
+    @GetMapping("customerById/{id}")
+    public Mono<ResponseEntity<CustomerDTO>> getCustomerById(@PathVariable Long id) {
+
+        return accountService.findByIdCustomer(id)
+                .map(customerObject -> ResponseEntity.ok(customerObject))
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 }
