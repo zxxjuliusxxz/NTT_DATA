@@ -63,4 +63,9 @@ public class BankAccountController {
                 .map(customerObject -> ResponseEntity.ok(customerObject))
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
+
+    public Mono<String> fallBackGetCustomerById(Integer id, RuntimeException runtimeException){
+        return Mono.just("Microservicio Customer no esta respondiendo");
+    }
+
 }
