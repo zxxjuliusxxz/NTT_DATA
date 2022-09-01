@@ -56,7 +56,8 @@ public class BankAccountController {
 
     //NUEVOS
     @GetMapping("customerById/{id}")
-    @CircuitBreaker(name="customer", fallbackMethod = "fallBackGetCustomerById")
+
+    @CircuitBreaker(name="/api/v1/customer", fallbackMethod = "fallBackGetCustomerById")
     public Mono<ResponseEntity<CustomerDTO>> getCustomerById(@PathVariable Long id) {
 
         return accountService.findByIdCustomer(id)
@@ -64,7 +65,7 @@ public class BankAccountController {
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
-    public Mono<String> fallBackGetCustomerById(Integer id, RuntimeException runtimeException){
+    public Mono<String> fallBackGetCustomerById(Long id, RuntimeException runtimeException){
         return Mono.just("Microservicio Customer no esta respondiendo");
     }
 
