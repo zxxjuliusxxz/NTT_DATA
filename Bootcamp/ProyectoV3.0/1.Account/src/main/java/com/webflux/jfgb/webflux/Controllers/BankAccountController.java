@@ -3,6 +3,7 @@ package com.webflux.jfgb.webflux.Controllers;
 import com.webflux.jfgb.webflux.Application.Models.DTO.CustomerDTO;
 import com.webflux.jfgb.webflux.Application.Services.BankAccount.IBankAccountService;
 import com.webflux.jfgb.webflux.Domain.BankAccount;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -55,6 +56,7 @@ public class BankAccountController {
 
     //NUEVOS
     @GetMapping("customerById/{id}")
+    @CircuitBreaker(name="customer", fallbackMethod = "fallBackGetCustomerById")
     public Mono<ResponseEntity<CustomerDTO>> getCustomerById(@PathVariable Long id) {
 
         return accountService.findByIdCustomer(id)

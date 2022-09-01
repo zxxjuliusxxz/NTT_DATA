@@ -69,9 +69,10 @@ public class BankAccountService implements IBankAccountService {
 
     @Override
     public Mono<CustomerDTO> findByIdCustomer(Long ruc_dni) {
-        //logger.info("Cuenta encontrada con codigo: " + bankAccountRepository.findById(id));
+
         CustomerDTO customer = new CustomerDTO();
         Mono<CustomerDTO> customerById = this.webClient.get().uri("/api/v1/customer/{id}", ruc_dni).retrieve().bodyToMono(CustomerDTO.class);
+        logger.info("Cliente encontrado desde el otro microservicio: " + customerById);
         return customerById.flatMap(x->{
             customer.setRuc_dni(x.getRuc_dni());
             customer.setName(x.getName());
