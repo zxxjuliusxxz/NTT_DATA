@@ -1,7 +1,9 @@
 package com.webflux.jfgb.webflux.Controllers;
 
+import com.webflux.jfgb.webflux.Application.Models.DTO.CustomerDTO;
 import com.webflux.jfgb.webflux.Application.Services.BankAccount.IBankAccountService;
 import com.webflux.jfgb.webflux.Domain.BankAccount;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -38,6 +40,7 @@ public class BankAccountController {
 
     @GetMapping("/{id}")
     public Mono<ResponseEntity<BankAccount>> getAccountBank(@PathVariable String id) {
+
         return accountService.findById(id)
                 .map(accountBank -> ResponseEntity.ok(accountBank))
                 .defaultIfEmpty(ResponseEntity.notFound().build());
@@ -50,4 +53,20 @@ public class BankAccountController {
                 .map(mapper -> ResponseEntity.ok(mapper))
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
+
+    //NUEVOS
+    @GetMapping("customerById/{id}")
+
+    @CircuitBreaker(name="/api/v1/customer", fallbackMethod = "fallBackGetCustomerById")
+    public Mono<ResponseEntity<CustomerDTO>> getCustomerById(@PathVariable Long id) {
+
+        return accountService.findByIdCustomer(id)
+                .map(customerObject -> ResponseEntity.ok(customerObject))
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    public Mono<String> fallBackGetCustomerById(Long id, RuntimeException runtimeException){
+        return Mono.just("Microservicio Customer no esta respondiendo");
+    }
+
 }

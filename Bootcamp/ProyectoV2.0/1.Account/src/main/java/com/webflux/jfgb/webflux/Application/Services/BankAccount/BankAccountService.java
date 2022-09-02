@@ -1,5 +1,6 @@
 package com.webflux.jfgb.webflux.Application.Services.BankAccount;
 
+import com.webflux.jfgb.webflux.Application.Models.DTO.CustomerDTO;
 import com.webflux.jfgb.webflux.Application.Models.Enum.CustomerTypesEnum;
 import com.webflux.jfgb.webflux.Domain.BankAccount;
 import com.webflux.jfgb.webflux.Infrastructure.BankAccountRepository;
@@ -8,12 +9,18 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import java.util.function.Function;
 @Service
 @Log4j2
 public class BankAccountService implements IBankAccountService {
+
+    private final WebClient webClient;
+    public BankAccountService(WebClient.Builder webClientBuilder){
+        this.webClient = webClientBuilder.baseUrl("http://localhost:8083").build();
+    }
 
     private static final Logger logger = LogManager.getLogger(BankAccountService.class);
     @Autowired
@@ -58,6 +65,28 @@ public class BankAccountService implements IBankAccountService {
     public Mono<BankAccount> findById(String id) {
         logger.info("Cuenta encontrada con codigo: " + bankAccountRepository.findById(id));
         return bankAccountRepository.findById(id);
+    }
+
+    @Override
+    public Mono<CustomerDTO> findByIdCustomer(Long ruc_dni) {
+
+        CustomerDTO customer = new CustomerDTO();
+        Mono<CustomerDTO> customerById = this.webClient.get().uri("/api/v1/customer/{id}", ruc_dni).retrieve().bodyToMono(CustomerDTO.class);
+        customerById.flatMap(x->{
+            logger.info("MICROSERVICIOOOOO !!!!: " + x);
+            System.out.println("MICROSERVICIOOOOO !!!!!!!!!!!!: " + x);
+            Mono<CustomerDTO> cust =  Mono.just(x);
+            return cust;
+        });
+
+        logger.info("Cliente encontrado desde el otro microservicio: " + customerById);
+        return customerById.flatMap(x->{
+            customer.setRuc_dni(x.getRuc_dni());
+            customer.setName(x.getName());
+            customer.setTypes(x.getTypes());
+            Mono<CustomerDTO> cust = Mono.just(customer);
+            return cust;
+        });
     }
 
     @Override
